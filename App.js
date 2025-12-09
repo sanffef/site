@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (Mock Backend) ---
-
-// Начальные данные, если localStorage пуст
 const INITIAL_USERS = [
   { username: 'admin', password: '123', role: 'admin' },
   { username: 'sec', password: '123', role: 'secretary' },
@@ -11,21 +8,17 @@ const INITIAL_USERS = [
 ];
 
 const App = () => {
-  // --- STATE ---
   const [users, setUsers] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  
-  // State для форм
+
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
   const [regForm, setRegForm] = useState({ username: '', password: '', role: 'student' });
   const [isRegistering, setIsRegistering] = useState(false);
   const [fileInput, setFileInput] = useState(null);
 
-  // --- ЭФФЕКТЫ (Загрузка/Сохранение данных) ---
   
   useEffect(() => {
-    // Загрузка данных при старте
     const storedUsers = JSON.parse(localStorage.getItem('app_users'));
     const storedDocs = JSON.parse(localStorage.getItem('app_docs'));
     
@@ -38,17 +31,14 @@ const App = () => {
     if (storedDocs) setDocuments(storedDocs);
   }, []);
 
-  // Сохранение документов при изменении
   useEffect(() => {
     localStorage.setItem('app_docs', JSON.stringify(documents));
   }, [documents]);
 
-  // Сохранение пользователей при изменении
   useEffect(() => {
     localStorage.setItem('app_users', JSON.stringify(users));
   }, [users]);
 
-  // --- ЛОГИКА АУТЕНТИФИКАЦИИ ---
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -81,9 +71,7 @@ const App = () => {
     setCurrentUser(null);
   };
 
-  // --- ЛОГИКА РАБОТЫ С ДОКУМЕНТАМИ ---
 
-  // Студент: Загрузка
   const handleUpload = (e) => {
     e.preventDefault();
     if (!fileInput) return;
@@ -93,7 +81,7 @@ const App = () => {
       studentName: currentUser.username,
       fileName: fileInput.name,
       date: new Date().toLocaleString(),
-      status: 'На проверке', // Статусы: 'На проверке', 'Принят', 'Отклонен'
+      status: 'На проверке',
     };
 
     setDocuments([...documents, newDoc]);
@@ -101,7 +89,6 @@ const App = () => {
     alert('Документ отправлен!');
   };
 
-  // Секретарь: Изменение статуса
   const updateStatus = (id, newStatus) => {
     const updatedDocs = documents.map((doc) =>
       doc.id === id ? { ...doc, status: newStatus } : doc
@@ -109,13 +96,11 @@ const App = () => {
     setDocuments(updatedDocs);
   };
 
-  // Админ: Удаление пользователя (пример)
   const deleteUser = (username) => {
     if (username === 'admin') return alert('Нельзя удалить главного админа');
     setUsers(users.filter((u) => u.username !== username));
   };
 
-  // --- РЕНДЕРИНГ КОМПОНЕНТОВ ---
 
   if (!currentUser) {
     return (
@@ -210,7 +195,18 @@ const App = () => {
                 <tbody>
                   {documents.filter(d => d.studentName === currentUser.username).map(doc => (
                     <tr key={doc.id}>
-                      <td>{doc.fileName}</td>
+                      <td>
+                        <div>{doc.fileName}</div>
+                        <a 
+                          href={`http://localhost:5000/uploads/${doc.fileName}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          download
+                          style={{ fontSize: '12px', color: '#007bff', textDecoration: 'underline' }}
+                        >
+                          Скачать
+                        </a>
+                      </td>
                       <td>{doc.date}</td>
                       <td>
                         <span className={`status ${doc.status === 'Принят' ? 'green' : doc.status === 'Отклонен' ? 'red' : 'yellow'}`}>
@@ -243,7 +239,18 @@ const App = () => {
                   {documents.map(doc => (
                     <tr key={doc.id}>
                       <td>{doc.studentName}</td>
-                      <td>{doc.fileName}</td>
+                      <td>
+                        <div>{doc.fileName}</div>
+                        <a 
+                          href={`http://localhost:3000/uploads/${doc.fileName}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          download
+                          style={{ fontSize: '12px', color: '#007bff', textDecoration: 'underline' }}
+                        >
+                          Скачать
+                        </a>
+                      </td>
                       <td>
                         <span className={`status ${doc.status === 'Принят' ? 'green' : doc.status === 'Отклонен' ? 'red' : 'yellow'}`}>
                           {doc.status}
