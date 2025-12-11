@@ -3,28 +3,35 @@ body {
   background-color: #f4f7f6;
   margin: 0;
   padding: 0;
+  line-height: 1.6;
 }
 
 .container {
-  max-width: 800px;
+  max-width: 900px; 
   margin: 0 auto;
   padding: 20px;
 }
 
-/* Auth */
 .auth-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh; 
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
 }
 
 .card {
   background: white;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08); 
   width: 100%;
   max-width: 350px;
   display: flex;
@@ -34,8 +41,9 @@ body {
 
 input, select {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc; 
   border-radius: 4px;
+  font-size: 1rem;
 }
 
 button {
@@ -45,11 +53,14 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 button:hover {
   background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
 .link {
@@ -57,15 +68,22 @@ button:hover {
   cursor: pointer;
   text-align: center;
   font-size: 0.9rem;
+  margin-top: 5px;
+  transition: color 0.2s;
 }
 
-/* Dashboard */
+.link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: white;
-  padding: 15px 20px;
+  padding: 15px 25px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   margin-bottom: 20px;
@@ -73,6 +91,12 @@ header {
 
 .logout-btn {
   background-color: #ff4757;
+  padding: 8px 15px;
+  width: auto;
+}
+
+.logout-btn:hover {
+  background-color: #d63031;
 }
 
 .role-view {
@@ -82,14 +106,32 @@ header {
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
+.role-view h2 {
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
 .upload-form {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   align-items: center;
+  flex-wrap: wrap; 
 }
 
-/* Tables */
+.upload-form input[type="file"] {
+  flex-grow: 1;
+  border: 1px dashed #ccc;
+  padding: 8px;
+}
+.upload-form button {
+    flex-shrink: 0;
+}
+
+
 .table-wrapper {
   overflow-x: auto;
 }
@@ -98,6 +140,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  font-size: 0.95rem;
 }
 
 th, td {
@@ -108,39 +151,58 @@ th, td {
 
 th {
   background-color: #f8f9fa;
+  font-weight: 600;
+  color: #555;
 }
 
-/* Statuses */
+tr:hover {
+    background-color: #fafafa;
+}
+
 .status {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 0.85rem;
   font-weight: bold;
+  display: inline-block;
 }
+
 .status.yellow { background-color: #ffeaa7; color: #d35400; }
 .status.green { background-color: #55efc4; color: #00b894; }
 .status.red { background-color: #ff7675; color: #d63031; }
 
-/* Actions */
+
 .actions {
   display: flex;
   gap: 5px;
 }
-.btn-accept { background-color: #00b894; width: 30px; height: 30px; padding: 0; }
-.btn-reject { background-color: #ff7675; width: 30px; height: 30px; padding: 0; }
+.actions button {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+}
+.btn-accept { background-color: #00b894; }
+.btn-reject { background-color: #ff7675; }
 .btn-reject:hover { background-color: #d63031; }
 
-/* Admin Stats */
 .stats {
   display: flex;
   gap: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
 }
 .stat-card {
   flex: 1;
+  min-width: 150px;
   background: #f1f2f6;
+  color: #333;
   padding: 15px;
   border-radius: 8px;
   text-align: center;
   font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }

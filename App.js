@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+const API_URL = 'http://localhost:5152';
+
 const INITIAL_USERS = [
   { username: 'admin', password: '123', role: 'admin' },
   { username: 'sec', password: '123', role: 'secretary' },
@@ -72,22 +74,45 @@ const App = () => {
   };
 
 
-  const handleUpload = (e) => {
-    e.preventDefault();
-    if (!fileInput) return;
+  const handleUpload = async (e) => {
+  e.preventDefault();
+  if (!fileInput) return;
+
+  // Создаем объект FormData для отправки файла
+  const formData = new FormData();
+  formData.append('file', fileInput);
+
+  try {
+    // 2. Реальная отправка на сервер
+    const response = await fetch(`${API_URL}/api/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Ошибка загрузки');
+    }
+
+    const data = await response.json(); // Получаем имя файла, которое дал сервер
 
     const newDoc = {
       id: Date.now(),
       studentName: currentUser.username,
-      fileName: fileInput.name,
+      originalName: fileInput.name, // Имя для отображения
+      serverFileName: data.fileName, // Имя файла на диске (с GUID)
       date: new Date().toLocaleString(),
       status: 'На проверке',
     };
 
     setDocuments([...documents, newDoc]);
     setFileInput(null);
-    alert('Документ отправлен!');
-  };
+    alert('Документ успешно загружен на сервер!');
+
+  } catch (error) {
+    console.error(error);
+    alert('Ошибка при загрузке файла на сервер');
+  }
+};
 
   const updateStatus = (id, newStatus) => {
     const updatedDocs = documents.map((doc) =>
@@ -129,7 +154,7 @@ const App = () => {
             >
               <option value="student">Студент</option>
               <option value="secretary">Секретарь</option>
-              <option value="admin">Админ</option>
+              <option value="admin">Админ</option> // это надо удалить
             </select>
             <button type="submit">Зарегистрироваться</button>
             <p onClick={() => setIsRegistering(false)} className="link">Вернуться ко входу</p>
@@ -196,12 +221,15 @@ const App = () => {
                   {documents.filter(d => d.studentName === currentUser.username).map(doc => (
                     <tr key={doc.id}>
                       <td>
-                        <div>{doc.fileName}</div>
+                        {/* Отображаем имя файла для пользователя (оригинальное) */}
+                        <div>{doc.originalName || doc.fileName}</div> 
                         <a 
-                          href={`http://localhost:5000/uploads/${doc.fileName}`} 
+                          // ИСПРАВЛЕНО: используем doc.serverFileName
+                          href={`${API_URL}/uploads/${doc.serverFileName || doc.fileName}`} 
+                          // Используем оригинальное имя для скачивания
+                          download={doc.originalName} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          download
                           style={{ fontSize: '12px', color: '#007bff', textDecoration: 'underline' }}
                         >
                           Скачать
@@ -240,12 +268,15 @@ const App = () => {
                     <tr key={doc.id}>
                       <td>{doc.studentName}</td>
                       <td>
-                        <div>{doc.fileName}</div>
+                        {/* Отображаем имя файла для пользователя (оригинальное) */}
+                        <div>{doc.originalName || doc.fileName}</div> 
                         <a 
-                          href={`http://localhost:3000/uploads/${doc.fileName}`} 
+                          // ИСПРАВЛЕНО: используем doc.serverFileName
+                          href={`${API_URL}/uploads/${doc.serverFileName || doc.fileName}`}  
+                          // Используем оригинальное имя для скачивания
+                          download={doc.originalName}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          download
                           style={{ fontSize: '12px', color: '#007bff', textDecoration: 'underline' }}
                         >
                           Скачать
